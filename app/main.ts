@@ -51,23 +51,21 @@ async function main() {
   // You can use print statements as follows for debugging, they'll be visible when running tests.
   console.error("Logs from your program will appear here!");
 
-  console.error(JSON.stringify(response.choices[0].message, null, 2));
+  const message = response.choices[0].message;
 
-  const tool_call = response.choices[0].message?.tool_calls?.[0];
+  console.error(JSON.stringify(message, null, 2));
 
-  if (tool_call && tool_call.type == "function") {
-    // const tool_id = tool_call.id;
-    const tool_name = tool_call.function.name;
-    const tool_params = JSON.parse(tool_call.function.arguments);
-    // console.error(`Params: ${tool_params} | Type: ${typeof tool_params}`);
-    const file_path = tool_params.file_path;
-    if (tool_name == "Read") {
-      const file = await readFile(file_path, { encoding: "utf8" });
-      // console.log(file);
+  const toolCall = message?.tool_calls?.[0];
+
+  if (toolCall && toolCall.type == "function") {
+    const toolName = toolCall.function.name;
+    const filePath = JSON.parse(toolCall.function.arguments).file_path;
+    if (toolName == "Read") {
+      const file = await readFile(filePath, { encoding: "utf8" });
       process.stdout.write(file);
     }
   } else {
-    console.log(response.choices[0].message.content);
+    console.log(message.content);
   }
 }
 
