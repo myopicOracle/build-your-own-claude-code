@@ -1,0 +1,1 @@
+# START_FILE. Test for Read tool. The read is successful. END_FILE. 
